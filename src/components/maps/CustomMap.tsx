@@ -103,22 +103,34 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 						div.className = "cluster-marker";
 						div.textContent = String(count);
 						div.style.cssText = `
-              width: 40px;
-              height: 40px;
-              background: #000;
-              color: #fff;
-              border-radius: 9999px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: 14px;
-              font-weight: bold;
-            `;
+      width: 40px;
+      height: 40px;
+      background: #000;
+      color: #fff;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    `;
 
-						return new google.maps.marker.AdvancedMarkerElement({
+						const clusterMarker = new google.maps.marker.AdvancedMarkerElement({
 							position,
 							content: div,
 						});
+
+						clusterMarker.addListener("gmp-click", () => {
+							if (!map || !(map instanceof google.maps.Map)) return;
+
+							const currentZoom = map.getZoom() ?? 12;
+							const targetZoom = Math.min(currentZoom + 2, 18);
+							map.setZoom(targetZoom);
+							map.panTo(position);
+						});
+
+						return clusterMarker;
 					},
 				},
 			});
