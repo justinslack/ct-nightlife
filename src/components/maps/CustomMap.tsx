@@ -153,6 +153,14 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 		<>
 			<GoogleMapsLoader onLoad={() => setMapLoaded(true)} />
 			<div ref={mapContainerRef} className="relative w-full h-[calc(100vh-10rem)] rounded-lg overflow-hidden">
+				{/* Loader overlay */}
+				{!mapLoaded && (
+					<div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80">
+						{/* Simple spinner, you can replace with any spinner component */}
+						<div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
+						<span className="ml-4 text-lg font-semibold text-blue-700">Loading map…</span>
+					</div>
+				)}
 				{/* Ensure the map container is rendered before anything else */}
 				<div id="gmap" className="absolute inset-0 z-0" />
 				{/* Render popup above the map */}
