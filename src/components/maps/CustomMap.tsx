@@ -22,6 +22,7 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 	const mapRef = useRef<google.maps.Map | null>(null);
 	const [mapLoaded, setMapLoaded] = useState(false);
 	const [popup, setPopup] = useState<PopupState | null>(null);
+	const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]); // Track markers
 
 	useEffect(() => {
 		if (!mapLoaded || !mapContainerRef.current) return;
@@ -33,19 +34,30 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 			const gmapElement = mapContainerRef.current?.querySelector("#gmap");
 			if (!gmapElement) return;
 
-			const map = new Map(gmapElement as HTMLElement, {
-				center: { lat: -33.9249, lng: 18.4341 },
-				zoom: 14,
-				mapId: "fc59b2ef47016cea",
-				clickableIcons: false,
-				streetViewControl: false,
-				fullscreenControl: false,
-				mapTypeControl: false,
-				gestureHandling: "greedy",
-				zoomControl: true,
-			});
+			// Only create the map if it doesn't exist
+			if (!mapRef.current) {
+				const map = new Map(gmapElement as HTMLElement, {
+					center: { lat: -33.9249, lng: 18.4341 },
+					zoom: 14,
+					mapId: "fc59b2ef47016cea",
+					clickableIcons: false,
+					streetViewControl: false,
+					fullscreenControl: false,
+					mapTypeControl: false,
+					gestureHandling: "greedy",
+					zoomControl: true,
+				});
+				mapRef.current = map;
 
-			mapRef.current = map;
+				map.addListener("dragstart", () => setPopup(null));
+				map.addListener("zoom_changed", () => setPopup(null));
+			}
+
+			const map = mapRef.current;
+
+			// Clear existing markers
+			markersRef.current.forEach((marker) => (marker.map = null));
+			markersRef.current = [];
 
 			clubs.forEach((club) => {
 				const icon = document.createElement("img");
@@ -71,8 +83,8 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 
 					if (!point || !center) return;
 
-					const x = (point.x - center.x) * scale + map.getDiv().offsetWidth / 2 + 0; // +20px for spacing
-					const y = (point.y - center.y) * scale + map.getDiv().offsetHeight / 2 - 0; // -40px to position above
+					const x = (point.x - center.x) * scale + map.getDiv().offsetWidth / 2 + 0;
+					const y = (point.y - center.y) * scale + map.getDiv().offsetHeight / 2 - 0;
 
 					setPopup({
 						x,
@@ -80,10 +92,9 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 						club,
 					});
 				});
-			});
 
-			map.addListener("dragstart", () => setPopup(null));
-			map.addListener("zoom_changed", () => setPopup(null));
+				markersRef.current.push(marker); // Track marker
+			});
 		}
 
 		initMap();
