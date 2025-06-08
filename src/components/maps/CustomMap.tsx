@@ -152,8 +152,10 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 	return (
 		<>
 			<GoogleMapsLoader onLoad={() => setMapLoaded(true)} />
-			<div ref={mapContainerRef} className="relative w-full h-[calc(100vh-10rem)] rounded-lg">
-				<div id="gmap" className="absolute inset-0" />
+			<div ref={mapContainerRef} className="relative w-full h-[calc(100vh-10rem)] rounded-lg overflow-hidden">
+				{/* Ensure the map container is rendered before anything else */}
+				<div id="gmap" className="absolute inset-0 z-0" />
+				{/* Render popup above the map */}
 				{popup && (
 					<div
 						className="absolute z-50"
