@@ -45,6 +45,7 @@ export type Post = {
 	};
 	date: string;
 	draft?: boolean;
+	logo_image?: string;
 };
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
@@ -104,6 +105,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 			author: frontmatter.author ? { name: frontmatter.author.name ?? "NML" } : undefined,
 			date: frontmatter.date,
 			draft: frontmatter.draft ?? false,
+			logo_image: frontmatter.logo_image ?? "",
 		};
 	} catch (error) {
 		console.error(`Error processing ${slug}.mdx:`, error);

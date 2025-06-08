@@ -1,37 +1,61 @@
 // components/Gallery.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { ScanEye } from "lucide-react";
 
 type GalleryProps = {
 	images: string[];
+	cover_image: string;
 };
 
-export default function Gallery({ images }: GalleryProps) {
+export default function Gallery({ images, cover_image }: GalleryProps) {
 	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+	useEffect(() => {
+		if (!selectedImage) return;
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape") setSelectedImage(null);
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [selectedImage]);
+
 	return (
-		<div className="max-w-xl mx-auto p-6">
-			<Carousel>
-				<CarouselContent>
+		<div className="max-w-3xl mx-auto p-6">
+			<Carousel
+				opts={{
+					align: "start",
+					loop: true,
+				}}
+			>
+				<CarouselContent className="h-96">
 					{images.map((src, i) => (
-						<CarouselItem key={i}>
-							<button key={i} onClick={() => setSelectedImage(src)} className="aspect-w-1 aspect-h-1 w-fit overflow-hidden rounded shadow">
+						<CarouselItem key={i} className="relative w-full">
+							<button key={i} onClick={() => setSelectedImage(src)} className="aspect-w-1 aspect-h-1 w-fit overflow-hidden rounded shadow cursor-pointer group">
 								<Image
 									src={src}
 									alt={`Gallery image ${i + 1}`}
-									width={400}
-									height={300}
-									className="object-fill hover:scale-105 transition-transform duration-200"
+									fill={true}
+									className="object-cover"
+									loading="eager"
+									quality={80}
+									priority={i === 0}
+									decoding="async"
+									placeholder="blur"
+									blurDataURL={cover_image}
 								/>
+								<span className="absolute right-2 top-2 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 w-10 h-10">
+									<ScanEye aria-label="View full size" className="text-white" strokeWidth={1} size={18} />
+								</span>
 							</button>
 						</CarouselItem>
 					))}
 				</CarouselContent>
-				<CarouselPrevious />
-				<CarouselNext />
+				<CarouselPrevious className="top-[calc(100%+0.5rem)] translate-y-0 left-0" />
+				<CarouselNext className="top-[calc(100%+0.5rem)] translate-y-0 left-2 translate-x-full" />
 			</Carousel>
 
 			{selectedImage && (
