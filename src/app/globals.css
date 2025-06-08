@@ -161,3 +161,11 @@
 		animation: slideIn 0.3s ease-out forwards;
 	}
 }
+
+.cluster-marker:hover {
+	background-color: green !important;
+}
+.cluster-marker {
+	@apply bg-pink-500 text-white;
+	transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}

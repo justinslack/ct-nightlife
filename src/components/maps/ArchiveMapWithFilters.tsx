@@ -12,7 +12,8 @@ type Club = {
 };
 
 export default function ArchiveMapWithFilters({ mapItems, neighborhoods }: { mapItems: Club[]; neighborhoods: string[] }) {
-	const [selected, setSelected] = useState<string[]>([]);
+	// Initialize with all neighborhoods selected
+	const [selected, setSelected] = useState<string[]>(neighborhoods);
 
 	const handleChange = (neigh: string) => {
 		setSelected((prev) => (prev.includes(neigh) ? prev.filter((n) => n !== neigh) : [...prev, neigh]));

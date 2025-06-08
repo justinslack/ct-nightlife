@@ -37,7 +37,7 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 
 			if (!mapRef.current) {
 				const map = new Map(gmapElement as HTMLElement, {
-					center: { lat: -33.9249, lng: 18.4341 },
+					center: { lat: -34.00838607138288, lng: 18.466771295682648 },
 					zoom: 12,
 					mapId: "fc59b2ef47016cea",
 					clickableIcons: false,
@@ -88,6 +88,14 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 				markers.push(marker);
 			}
 
+			if (clubs.length > 0 && map) {
+				const bounds = new google.maps.LatLngBounds();
+				clubs.forEach((club) => {
+					bounds.extend(club.location);
+				});
+				map.fitBounds(bounds);
+			}
+
 			// Clear previous clusterer if exists
 			if (clustererRef.current) {
 				clustererRef.current.clearMarkers();
@@ -103,18 +111,16 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 						div.className = "cluster-marker";
 						div.textContent = String(count);
 						div.style.cssText = `
-      width: 40px;
-      height: 40px;
-      background: #000;
-      color: #fff;
-      border-radius: 9999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-    `;
+							width: 40px;
+							height: 40px;
+							border-radius: 9999px;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							font-size: 14px;
+							font-weight: bold;
+							cursor: pointer;
+						`;
 
 						const clusterMarker = new google.maps.marker.AdvancedMarkerElement({
 							position,
@@ -144,7 +150,7 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 	return (
 		<>
 			<GoogleMapsLoader onLoad={() => setMapLoaded(true)} />
-			<div ref={mapContainerRef} className="relative w-full h-screen rounded-lg">
+			<div ref={mapContainerRef} className="relative w-full h-[calc(100vh-10rem)] rounded-lg">
 				<div id="gmap" className="absolute inset-0" />
 				{popup && (
 					<div
