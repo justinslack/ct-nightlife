@@ -60,6 +60,12 @@ export default async function DocsPage({ params }: { params: Params }) {
 
 		return (
 			<article className="mx-auto py-10 my-8 md:my-32 max-w-[1024px] flex flex-col gap-20 px-8">
+				{gallery?.length > 0 && (
+					<div>
+						<h2 className="text-2xl font-semibold mb-4">Gallery</h2>
+						<Gallery images={gallery} />
+					</div>
+				)}
 				<div className="pb-8 border-b border-b-secondary">
 					<h1 className="text-desktop-h1 font-medium mb-2 leading-[1.2]">{title}</h1>
 
@@ -90,13 +96,6 @@ export default async function DocsPage({ params }: { params: Params }) {
 				{/* <SingleLocationMap lat={location.lat} lng={location.lng} markerLabel={title} /> */}
 
 				<div className="prose prose-lg dark:prose-invert max-w-3xl mx-auto">{Content}</div>
-
-				{gallery?.length > 0 && (
-					<div>
-						<h2 className="text-2xl font-semibold mb-4">Gallery</h2>
-						<Gallery images={gallery} />
-					</div>
-				)}
 
 				{notable_events?.length > 0 && (
 					<div className="mt-12">

@@ -10,6 +10,8 @@ type Club = {
 	slug: string;
 	location: { lat: number; lng: number };
 	status: "active" | "closed";
+	neighborhood: string;
+	tags: string[];
 };
 
 type PopupState = {

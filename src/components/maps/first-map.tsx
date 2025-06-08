@@ -9,6 +9,7 @@ export default async function ArchivePage() {
 		location: post.location,
 		status: (post.status === "closed" ? "closed" : "active") as "active" | "closed",
 		neighborhood: post.neighborhood,
+		tags: post.tags ?? [],
 	}));
 
 	const neighborhoods = Array.from(new Set(mapItems.map((item) => item.neighborhood))).sort();

@@ -150,11 +150,11 @@
 	@keyframes slideIn {
 		0% {
 			opacity: 0;
-			/* transform: scaleX(0); */
+			transform: scaleX(0);
 		}
 		100% {
 			opacity: 1;
-			/* transform: scaleX(1); */
+			transform: scaleX(1);
 		}
 	}
 	.animate-slideIn {
@@ -163,7 +163,7 @@
 }
 
 .cluster-marker:hover {
-	background-color: green !important;
+	@apply bg-pink-600 text-white;
 }
 .cluster-marker {
 	@apply bg-pink-500 text-white;
