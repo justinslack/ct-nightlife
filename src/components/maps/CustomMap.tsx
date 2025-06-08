@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import MarkerPopup from "./ClubMarker";
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import GoogleMapsLoader from "./GoogleMapsLoader";
+import MarkerPopup from "./ClubMarker";
 
 type Club = {
 	title: string;
@@ -22,7 +23,7 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 	const mapRef = useRef<google.maps.Map | null>(null);
 	const [mapLoaded, setMapLoaded] = useState(false);
 	const [popup, setPopup] = useState<PopupState | null>(null);
-	const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]); // Track markers
+	const clustererRef = useRef<MarkerClusterer | null>(null);
 
 	useEffect(() => {
 		if (!mapLoaded || !mapContainerRef.current) return;
@@ -31,14 +32,13 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 			const { Map } = (await google.maps.importLibrary("maps")) as google.maps.MapsLibrary;
 			const { AdvancedMarkerElement } = (await google.maps.importLibrary("marker")) as google.maps.MarkerLibrary;
 
-			const gmapElement = mapContainerRef.current?.querySelector("#gmap");
-			if (!gmapElement) return;
+			const gmapElement = mapContainerRef.current!.querySelector("#gmap");
+			if (!gmapElement || !Map || !AdvancedMarkerElement) return;
 
-			// Only create the map if it doesn't exist
 			if (!mapRef.current) {
 				const map = new Map(gmapElement as HTMLElement, {
 					center: { lat: -33.9249, lng: 18.4341 },
-					zoom: 14,
+					zoom: 12,
 					mapId: "fc59b2ef47016cea",
 					clickableIcons: false,
 					streetViewControl: false,
@@ -47,25 +47,21 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 					gestureHandling: "greedy",
 					zoomControl: true,
 				});
-				mapRef.current = map;
 
 				map.addListener("dragstart", () => setPopup(null));
 				map.addListener("zoom_changed", () => setPopup(null));
+				mapRef.current = map;
 			}
 
-			const map = mapRef.current;
+			const map = mapRef.current!;
+			const markers: google.maps.marker.AdvancedMarkerElement[] = [];
 
-			// Clear existing markers
-			markersRef.current.forEach((marker) => (marker.map = null));
-			markersRef.current = [];
-
-			clubs.forEach((club) => {
+			for (const club of clubs) {
 				const icon = document.createElement("img");
 				icon.src = "/icons/disco-icon.svg";
 				icon.className = "w-10 h-10";
 
 				const marker = new AdvancedMarkerElement({
-					map,
 					position: club.location,
 					title: club.title,
 					content: icon,
@@ -83,18 +79,51 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 
 					if (!point || !center) return;
 
-					const x = (point.x - center.x) * scale + map.getDiv().offsetWidth / 2 + 0;
-					const y = (point.y - center.y) * scale + map.getDiv().offsetHeight / 2 - 0;
+					const x = (point.x - center.x) * scale + map.getDiv().offsetWidth / 2;
+					const y = (point.y - center.y) * scale + map.getDiv().offsetHeight / 2;
 
-					setPopup({
-						x,
-						y,
-						club,
-					});
+					setPopup({ x, y, club });
 				});
 
-				markersRef.current.push(marker); // Track marker
+				markers.push(marker);
+			}
+
+			// Clear previous clusterer if exists
+			if (clustererRef.current) {
+				clustererRef.current.clearMarkers();
+			}
+
+			// Create new clusterer with basic count display
+			const clusterer = new MarkerClusterer({
+				map,
+				markers,
+				renderer: {
+					render: ({ count, position }) => {
+						const div = document.createElement("div");
+						div.className = "cluster-marker";
+						div.textContent = String(count);
+						div.style.cssText = `
+              width: 40px;
+              height: 40px;
+              background: #000;
+              color: #fff;
+              border-radius: 9999px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 14px;
+              font-weight: bold;
+            `;
+
+						return new google.maps.marker.AdvancedMarkerElement({
+							position,
+							content: div,
+						});
+					},
+				},
 			});
+
+			clustererRef.current = clusterer;
 		}
 
 		initMap();
@@ -105,7 +134,6 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 			<GoogleMapsLoader onLoad={() => setMapLoaded(true)} />
 			<div ref={mapContainerRef} className="relative w-full h-screen rounded-lg">
 				<div id="gmap" className="absolute inset-0" />
-
 				{popup && (
 					<div
 						className="absolute z-50"
