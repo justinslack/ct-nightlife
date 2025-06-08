@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 // import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
 import Link from "next/link";
-import SingleLocationMap from "@/components/maps/SingleLocation";
 import Gallery from "@/components/maps/Gallery";
 
 type Params = Promise<{ slug: string }>;
@@ -57,7 +56,7 @@ export default async function DocsPage({ params }: { params: Params }) {
 
 		if (!post) notFound();
 
-		const { title, location, address, neighborhood, start_year, end_year, tags, gallery, contributor, notable_events, sources, content: Content } = post;
+		const { title, address, neighborhood, start_year, end_year, tags, gallery, contributor, notable_events, sources, content: Content } = post;
 
 		return (
 			<article className="mx-auto py-10 my-8 md:my-32 max-w-[1024px] flex flex-col gap-20 px-8">
@@ -88,7 +87,7 @@ export default async function DocsPage({ params }: { params: Params }) {
 					</div>
 				</div>
 
-				<SingleLocationMap lat={location.lat} lng={location.lng} markerLabel={title} />
+				{/* <SingleLocationMap lat={location.lat} lng={location.lng} markerLabel={title} /> */}
 
 				<div className="prose prose-lg dark:prose-invert max-w-3xl mx-auto">{Content}</div>
 

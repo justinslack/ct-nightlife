@@ -1,5 +1,6 @@
 import CustomMap from "@/components/maps/CustomMap";
 import { getAllPosts } from "@/lib/mdx";
+import ArchiveMapWithFilters from "./ArchiveMapWithFilters";
 
 export default async function ArchivePage() {
 	const posts = await getAllPosts();
@@ -7,12 +8,11 @@ export default async function ArchivePage() {
 		title: post.title,
 		slug: post.slug,
 		location: post.location,
+		status: (post.status === "closed" ? "closed" : "active") as "active" | "closed",
+		neighborhood: post.neighborhood,
 	}));
 
-	return (
-		<div className="w-full mx-auto px-4 py-10">
-			<h1 className="text-3xl font-bold mb-6">Cape Town Club Archive</h1>
-			<CustomMap clubs={mapItems} />
-		</div>
-	);
+	const neighborhoods = Array.from(new Set(mapItems.map((item) => item.neighborhood))).sort();
+
+	return <ArchiveMapWithFilters mapItems={mapItems} neighborhoods={neighborhoods} />;
 }

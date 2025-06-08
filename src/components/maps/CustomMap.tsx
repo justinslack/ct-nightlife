@@ -8,6 +8,7 @@ type Club = {
 	title: string;
 	slug: string;
 	location: { lat: number; lng: number };
+	status: "active" | "closed";
 };
 
 type PopupState = {
@@ -58,7 +59,7 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 					content: icon,
 				});
 
-				marker.addListener("click", () => {
+				marker.addListener("gmp-click", () => {
 					const projection = map.getProjection();
 					if (!projection) return;
 
@@ -91,7 +92,7 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 	return (
 		<>
 			<GoogleMapsLoader onLoad={() => setMapLoaded(true)} />
-			<div ref={mapContainerRef} className="relative w-full h-[calc(100vh-10rem)] rounded-lg">
+			<div ref={mapContainerRef} className="relative w-full h-screen rounded-lg">
 				<div id="gmap" className="absolute inset-0" />
 
 				{popup && (
@@ -103,7 +104,7 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 							transform: "translateY(-100%)",
 						}}
 					>
-						<MarkerPopup title={popup.club.title} slug={popup.club.slug} onClose={() => setPopup(null)} />
+						<MarkerPopup title={popup.club.title} slug={popup.club.slug} onClose={() => setPopup(null)} status={popup.club.status} />
 					</div>
 				)}
 			</div>
