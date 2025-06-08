@@ -1,4 +1,3 @@
-import CustomMap from "@/components/maps/CustomMap";
 import { getAllPosts } from "@/lib/mdx";
 import ArchiveMapWithFilters from "./ArchiveMapWithFilters";
 
