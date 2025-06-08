@@ -24,17 +24,17 @@ export default function Gallery({ images, cover_image }: GalleryProps) {
 	}, [selectedImage]);
 
 	return (
-		<div className="max-w-3xl mx-auto p-6">
+		<div className="max-w-[1120px] mx-auto p-6">
 			<Carousel
 				opts={{
 					align: "start",
 					loop: true,
 				}}
 			>
-				<CarouselContent className="h-96">
+				<CarouselContent className="h-128">
 					{images.map((src, i) => (
-						<CarouselItem key={i} className="relative w-full">
-							<button key={i} onClick={() => setSelectedImage(src)} className="aspect-w-1 aspect-h-1 w-fit overflow-hidden rounded shadow cursor-pointer group">
+						<CarouselItem key={i} className="relative w-full rounded-xl">
+							<button key={i} onClick={() => setSelectedImage(src)} className="aspect-w-1 aspect-h-1 w-fit overflow-hidden shadow cursor-pointer group">
 								<Image
 									src={src}
 									alt={`Gallery image ${i + 1}`}

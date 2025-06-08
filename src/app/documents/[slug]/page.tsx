@@ -1,10 +1,10 @@
 import { getAllPosts, getPostBySlug } from "@/lib/mdx";
 import { notFound } from "next/navigation";
-// import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Gallery from "@/components/maps/Gallery";
 import Image from "next/image";
+import { BookUser, MapPin, Calendar, Tags } from "lucide-react";
 
 type Params = Promise<{ slug: string }>;
 
@@ -66,10 +66,10 @@ export default async function DocsPage({ params }: { params: Params }) {
 			tags,
 			cover_image,
 			gallery,
-			contributor,
 			notable_events,
 			sources,
 			logo_image,
+			status,
 			content: Content,
 		} = post;
 
@@ -78,7 +78,7 @@ export default async function DocsPage({ params }: { params: Params }) {
 				{gallery?.length > 0 && (
 					<div className="relative">
 						<div
-							className="bg-pink-900 absolute inset-0 dark:bg-gray-800 mix-blend-multiply"
+							className="gallery-bg bg-pink-700 absolute inset-0 dark:bg-gray-800 mix-blend-multiply"
 							style={
 								cover_image
 									? {
@@ -94,47 +94,35 @@ export default async function DocsPage({ params }: { params: Params }) {
 						<Gallery images={gallery} cover_image={cover_image} />
 					</div>
 				)}
-				<div className="pb-8 border-b border-b-secondary prose prose-lg dark:prose-invert">
-					<h1>
+				<div className="p-8 border-b border-b-secondary prose prose-lg dark:prose-invert max-w-7xl mx-auto my-16">
+					This venue is {status}
+					<h1 className="flex items-center">
 						{logo_image && (
-							<Image
-								src={logo_image}
-								alt={`${title} logo`}
-								className="inline-block h-10 mr-2"
-								width={40}
-								height={40}
-								style={{ height: "2.5rem", width: "auto" }}
-								priority
-							/>
+							<Image src={logo_image} alt={`${title} logo`} className="rounded-md inline-block h-10 not-prose mr-2 my-0" width={40} height={40} priority />
 						)}
 						{title}
 					</h1>
-
 					<div className="text-desktop-caption mt-4 space-y-1">
-						<div>
-							📍 <strong>Address:</strong> {address}
+						<div className="flex items-center gap-2">
+							<BookUser /> <strong>Address:</strong> {address}
 						</div>
-						<div>
-							🗺️ <strong>Neighborhood:</strong> {neighborhood}
+						<div className="flex items-center gap-2">
+							<MapPin /> <strong>Neighborhood:</strong> {neighborhood}
 						</div>
-						<div>
-							📅 <strong>Years Active:</strong> {start_year} - {end_year ?? "Present"}
-						</div>
-						<div>
-							🎤 <strong>Contributor:</strong> {contributor}
+						<div className="flex items-center gap-2">
+							<Calendar /> <strong>Years Active:</strong> {start_year} - {end_year ?? "Present"}
 						</div>
 					</div>
-
-					<div className="flex gap-2 flex-wrap my-4">
+					<h3>Tagged</h3>
+					<div className="flex gap-2 flex-wrap my-4 items-center">
+						<Tags />
 						{tags?.map((tag) => (
-							<span key={tag} className="font-medium text-desktop-caption">
+							<span key={tag} className="font-medium text-desktop-caption text-pink-600">
 								#{tag}
 							</span>
 						))}
 					</div>
 				</div>
-
-				{/* <SingleLocationMap lat={location.lat} lng={location.lng} markerLabel={title} /> */}
 
 				<div className="prose prose-lg dark:prose-invert max-w-3xl mx-auto">
 					{Content}
@@ -169,7 +157,7 @@ export default async function DocsPage({ params }: { params: Params }) {
 
 					<div className="mt-12 pt-8 border-t">
 						<Link href="/documents" className="text-primary hover:underline">
-							← Back to all documents
+							← Back to the archive
 						</Link>
 					</div>
 				</div>

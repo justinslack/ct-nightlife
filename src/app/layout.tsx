@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { satoshi } from "@/lib/fonts";
 import "./globals.css";
+import Link from "next/link";
 
 export const metadata: Metadata = {
 	title: "Create Next App",
@@ -14,7 +15,17 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${satoshi.variable} antialiased font-satoshi`}>{children}</body>
+			<body className={`${satoshi.variable} antialiased font-satoshi`}>
+				<h1>
+					<Link href="/" className="text-secondary hover:text-accent">
+						Home
+					</Link>
+					<Link href="/documents" className="text-secondary hover:text-accent">
+						Archive
+					</Link>
+				</h1>
+				{children}
+			</body>
 		</html>
 	);
 }

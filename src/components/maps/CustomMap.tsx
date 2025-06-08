@@ -133,7 +133,7 @@ export default function CustomMap({ clubs }: { clubs: Club[] }) {
 							if (!map || !(map instanceof google.maps.Map)) return;
 
 							const currentZoom = map.getZoom() ?? 12;
-							const targetZoom = Math.min(currentZoom + 2, 18);
+							const targetZoom = Math.min(currentZoom + 2, 15);
 							map.setZoom(targetZoom);
 							map.panTo(position);
 						});

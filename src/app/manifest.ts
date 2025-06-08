@@ -21,20 +21,43 @@ export default function manifest(): MetadataRoute.Manifest {
 				type: "image/png",
 			},
 		],
-		// screenshots: [
-		// 	{
-		// 		src: "/images/phone-hero.png",
-		// 		sizes: "746x798",
-		// 		type: "image/png",
-		// 		form_factor: "wide",
-		// 		label: "Atura",
-		// 	},
-		// 	{
-		// 		src: "/images/phone-hero.png",
-		// 		sizes: "746x798",
-		// 		type: "image/png",
-		// 		label: "Atura",
-		// 	},
-		// ],
+		screenshots: [
+			{
+				src: "/phone-hero.png",
+				sizes: "746x798",
+				type: "image/png",
+				form_factor: "wide",
+				label: "Atura",
+			},
+			{
+				src: "/phone-hero.png",
+				sizes: "746x798",
+				type: "image/png",
+				label: "Atura",
+			},
+			{
+				src: "/phone-hero.png",
+				sizes: "746x798",
+				type: "image/png",
+				form_factor: "wide",
+				label: "Atura",
+			},
+			{
+				src: "/phone-hero.png",
+				sizes: "746x798",
+				type: "image/png",
+				label: "Atura",
+			},
+		],
+		related_applications: [
+			{
+				platform: "web",
+				url: "https://ctnightlife.co.za",
+			},
+			{
+				platform: "play",
+				url: "https://ctnightlife.co.za",
+			},
+		],
 	};
 }
