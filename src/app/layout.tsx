@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { satoshi } from "@/lib/fonts";
 import "./globals.css";
-import Link from "next/link";
+import MainNav from "@/components/organisms/nav/components/MainNav";
 
 export const metadata: Metadata = {
 	title: "Create Next App",
@@ -16,14 +16,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${satoshi.variable} antialiased font-satoshi`}>
-				<h1>
-					<Link href="/" className="text-secondary hover:text-accent">
-						Home
-					</Link>
-					<Link href="/documents" className="text-secondary hover:text-accent">
-						Archive
-					</Link>
-				</h1>
+				<MainNav />
 				{children}
 			</body>
 		</html>
