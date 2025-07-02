@@ -94,6 +94,35 @@ export function createClusterRenderer() {
   };
 }
 
+export function createClusterClickHandler(map: google.maps.Map) {
+  return (event: google.maps.MapMouseEvent, cluster: { markers?: unknown[] }) => {
+    // Prevent default zoom behavior
+    event.stop?.();
+    
+    if (cluster.markers) {
+      // Calculate bounds of clustered markers
+      const bounds = new google.maps.LatLngBounds();
+      // @ts-expect-error - MarkerClusterer types are complex, this works at runtime
+      cluster.markers.forEach((marker: { position?: google.maps.LatLng }) => {
+        if (marker.position) {
+          bounds.extend(marker.position);
+        }
+      });
+
+      // Fit bounds with padding, then reduce zoom by 1 level for more space
+      map.fitBounds(bounds, { top: 50, right: 50, bottom: 50, left: 50 });
+      
+      // Wait for fitBounds to complete, then reduce zoom slightly
+      setTimeout(() => {
+        const currentZoom = map.getZoom();
+        if (currentZoom && currentZoom > DEFAULT_MAP_CONFIG.minZoom!) {
+          map.setZoom(currentZoom - 1);
+        }
+      }, 100);
+    }
+  };
+}
+
 export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number

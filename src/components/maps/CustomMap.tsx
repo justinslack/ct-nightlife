@@ -10,6 +10,7 @@ import {
   calculateMapBounds, 
   calculateMarkerPosition,
   createClusterRenderer,
+  createClusterClickHandler,
   debounce
 } from "./utils/mapHelpers";
 import type { Club, PopupState } from "./types/map.types";
@@ -87,11 +88,6 @@ export default memo<CustomMapProps>(function CustomMap({ clubs }) {
 						zoomControl: true,
 					});
 
-					// Add map event listeners
-					const dragListener = map.addListener("dragstart", debouncedClosePopup);
-					const zoomListener = map.addListener("zoom_changed", debouncedClosePopup);
-					
-					listenersRef.current.push(dragListener, zoomListener);
 					mapRef.current = map;
 				}
 
@@ -99,6 +95,12 @@ export default memo<CustomMapProps>(function CustomMap({ clubs }) {
 				
 				// Clean up previous markers and clusterer
 				cleanup();
+				
+				// Add map event listeners for popup closing (after cleanup)
+				const dragListener = map.addListener("dragstart", debouncedClosePopup);
+				const zoomListener = map.addListener("zoom_changed", debouncedClosePopup);
+				
+				listenersRef.current.push(dragListener, zoomListener);
 
 				// Create markers for clubs
 				const markers: google.maps.marker.AdvancedMarkerElement[] = [];
@@ -137,6 +139,7 @@ export default memo<CustomMapProps>(function CustomMap({ clubs }) {
 						map,
 						markers,
 						renderer: createClusterRenderer(),
+						onClusterClick: createClusterClickHandler(map),
 					});
 
 					clustererRef.current = clusterer;
