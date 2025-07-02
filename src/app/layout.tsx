@@ -15,6 +15,13 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
+			<head>
+				{/* DNS prefetch and preconnect for Google Maps API */}
+				<link rel="dns-prefetch" href="//maps.googleapis.com" />
+				<link rel="dns-prefetch" href="//maps.gstatic.com" />
+				<link rel="preconnect" href="https://maps.googleapis.com" />
+				<link rel="preconnect" href="https://maps.gstatic.com" />
+			</head>
 			<body className={`${satoshi.variable} antialiased font-satoshi`}>
 				<MainNav />
 				{children}
