@@ -61,7 +61,7 @@ export default memo<MapFiltersProps>(function MapFilters({
         <PopoverTrigger asChild>
           <Button variant="outline" className="relative">
             <Filter className="w-4 h-4 mr-2" />
-            Filter
+            Show me
             {hasActiveFilters && (
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full" />
             )}

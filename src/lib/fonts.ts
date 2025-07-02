@@ -16,3 +16,15 @@ export const satoshi = localFont({
 	variable: "--font-satoshi",
 	display: "swap",
 });
+
+export const archivo = localFont({
+	src: [
+		{
+			path: "../../public/fonts/ArchivoNarrow.ttf",
+			weight: "100 700",
+			style: "normal",
+		},
+	],
+	variable: "--font-archivo",
+	display: "swap",
+});

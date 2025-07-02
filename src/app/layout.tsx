@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { satoshi } from "@/lib/fonts";
+import { satoshi, archivo } from "@/lib/fonts";
 import "./globals.css";
 import MainNav from "@/components/organisms/nav/components/MainNav";
 
@@ -22,7 +22,7 @@ export default function RootLayout({
 				<link rel="preconnect" href="https://maps.googleapis.com" />
 				<link rel="preconnect" href="https://maps.gstatic.com" />
 			</head>
-			<body className={`${satoshi.variable} antialiased font-satoshi`}>
+			<body className={`${satoshi.variable} ${archivo.variable} antialiased font-satoshi`}>
 				<MainNav />
 				{children}
 			</body>
