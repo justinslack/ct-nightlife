@@ -13,7 +13,7 @@ export function useMapFilters(clubs: Club[], neighborhoods: string[]) {
     [clubs]
   );
 
-  const availableStatuses = useMemo(() => ["active", "closed"], []);
+  const availableStatuses = useMemo(() => ["Active", "Closed"], []);
 
   const filteredClubs = useMemo(() => 
     clubs.filter(club => {

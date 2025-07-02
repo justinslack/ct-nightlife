@@ -12,7 +12,7 @@ export default async function ClubsPage() {
 	const clubs = await getAllPosts();
 
 	// Helper function to get bg color based on status
-	const getBgColor = (status: string) => (status === "closed" ? "bg-red-100 border-red-300 text-red-800" : "bg-green-100 border-green-300 text-green-800");
+	const getBgColor = (status: string) => (status === "Closed" ? "bg-red-100 border-red-300 text-red-800" : "bg-green-100 border-green-300 text-green-800");
 
 	return (
 		<div className="max-w-7xl mx-auto py-10 px-8 mt-16">

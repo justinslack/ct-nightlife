@@ -5,7 +5,7 @@ export const DEFAULT_MAP_CONFIG: MapConfig = {
   zoom: 13,
   mapId: "fc59b2ef47016cea",
   minZoom: 11,
-  maxZoom: 18
+  maxZoom: 20
 };
 
 export const MAP_STYLES = {

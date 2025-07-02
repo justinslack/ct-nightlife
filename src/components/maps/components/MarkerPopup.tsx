@@ -6,16 +6,16 @@ import { X } from "lucide-react";
 interface MarkerPopupProps {
   title: string;
   slug: string;
-  status: "active" | "closed";
+  status: "Active" | "Closed";
   onClose: () => void;
 }
 
 const statusConfig = {
-  active: {
+  Active: {
     className: "bg-green-100 border-green-300 text-green-800",
     label: "Active"
   },
-  closed: {
+    Closed: {
     className: "bg-red-100 border-red-300 text-red-800",
     label: "Closed"
   }

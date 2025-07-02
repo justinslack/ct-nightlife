@@ -16,11 +16,20 @@ interface PostData {
 }
 
 function transformPostToClub(post: PostData): Club {
+  // Handle both old lowercase and new capitalized status formats
+  const normalizeStatus = (status?: string): "Active" | "Closed" => {
+    if (!status) return "Active";
+    
+    // Handle both old and new formats
+    const lowerStatus = status.toLowerCase();
+    return lowerStatus === "closed" ? "Closed" : "Active";
+  };
+
   return {
     title: post.title || "Untitled",
     slug: post.slug || "",
     location: post.location || { lat: 0, lng: 0 },
-    status: (post.status === "closed" ? "closed" : "active") as "active" | "closed",
+    status: normalizeStatus(post.status),
     neighborhood: post.neighborhood || "Unknown",
     tags: Array.isArray(post.tags) ? post.tags : [],
   };

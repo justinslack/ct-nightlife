@@ -2,7 +2,7 @@ export interface Club {
   title: string;
   slug: string;
   location: { lat: number; lng: number };
-  status: "active" | "closed";
+  status: "Active" | "Closed";
   neighborhood: string;
   tags: string[];
 }
