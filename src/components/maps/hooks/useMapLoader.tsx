@@ -33,7 +33,7 @@ export function useMapLoader(): UseMapLoaderReturn {
       return;
     }
 
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=maps,marker&loading=async`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=maps,marker`;
     script.async = true;
     script.defer = true;
     script.setAttribute("loading", "async");
