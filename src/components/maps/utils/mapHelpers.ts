@@ -2,9 +2,9 @@ import type { Club, MapConfig } from '../types/map.types';
 
 export const DEFAULT_MAP_CONFIG: MapConfig = {
   center: { lat: -34.00838607138288, lng: 18.466771295682648 },
-  zoom: 12,
+  zoom: 13,
   mapId: "fc59b2ef47016cea",
-  minZoom: 8,
+  minZoom: 11,
   maxZoom: 18
 };
 

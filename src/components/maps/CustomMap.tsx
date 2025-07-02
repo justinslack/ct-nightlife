@@ -23,7 +23,7 @@ export default memo<CustomMapProps>(function CustomMap({ clubs }) {
 	const mapContainerRef = useRef<HTMLDivElement>(null);
 	const mapRef = useRef<google.maps.Map | null>(null);
 	const clustererRef = useRef<MarkerClusterer | null>(null);
-	const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
+	const markersRef = useRef<(google.maps.marker.AdvancedMarkerElement | google.maps.Marker)[]>([]);
 	const listenersRef = useRef<google.maps.MapsEventListener[]>([]);
 	
 	const [popup, setPopup] = useState<PopupState | null>(null);
@@ -61,7 +61,15 @@ export default memo<CustomMapProps>(function CustomMap({ clubs }) {
 			clustererRef.current = null;
 		}
 
-		// Clear markers
+		// Clear regular markers from map (Advanced Markers are handled by clusterer)
+		markersRef.current.forEach(marker => {
+			if ('setMap' in marker) {
+				// This is a regular Marker
+				marker.setMap(null);
+			}
+		});
+
+		// Clear markers array
 		markersRef.current = [];
 	}, []);
 
@@ -71,10 +79,21 @@ export default memo<CustomMapProps>(function CustomMap({ clubs }) {
 		async function initMap() {
 			try {
 				const { Map } = (await google.maps.importLibrary("maps")) as google.maps.MapsLibrary;
-				const { AdvancedMarkerElement } = (await google.maps.importLibrary("marker")) as google.maps.MarkerLibrary;
+				
+				// Only load Advanced Markers if we have a mapId
+				const useAdvancedMarkers = !!DEFAULT_MAP_CONFIG.mapId;
+				let AdvancedMarkerElement: typeof google.maps.marker.AdvancedMarkerElement | undefined;
+				let Marker: typeof google.maps.Marker | undefined;
+				
+				if (useAdvancedMarkers) {
+					const markerLibrary = (await google.maps.importLibrary("marker")) as google.maps.MarkerLibrary;
+					AdvancedMarkerElement = markerLibrary.AdvancedMarkerElement;
+				} else {
+					Marker = google.maps.Marker;
+				}
 
 				const gmapElement = mapContainerRef.current!.querySelector("#gmap");
-				if (!gmapElement || !Map || !AdvancedMarkerElement) return;
+				if (!gmapElement || !Map) return;
 
 				// Initialize map if it doesn't exist
 				if (!mapRef.current) {
@@ -103,23 +122,44 @@ export default memo<CustomMapProps>(function CustomMap({ clubs }) {
 				listenersRef.current.push(dragListener, zoomListener);
 
 				// Create markers for clubs
-				const markers: google.maps.marker.AdvancedMarkerElement[] = [];
+				const markers: (google.maps.marker.AdvancedMarkerElement | google.maps.Marker)[] = [];
 
 				for (const club of clubs) {
-					const icon = createMarkerIcon();
-					
-					const marker = new AdvancedMarkerElement({
-						position: club.location,
-						title: club.title,
-						content: icon,
-					});
+					if (useAdvancedMarkers && AdvancedMarkerElement) {
+						// Use Advanced Markers (requires mapId)
+						const icon = createMarkerIcon();
+						
+						const marker = new AdvancedMarkerElement({
+							position: club.location,
+							title: club.title,
+							content: icon,
+						});
 
-					const clickListener = marker.addListener("gmp-click", () => {
-						handleMarkerClick(club);
-					});
-					
-					listenersRef.current.push(clickListener);
-					markers.push(marker);
+						const clickListener = marker.addListener("gmp-click", () => {
+							handleMarkerClick(club);
+						});
+						
+						listenersRef.current.push(clickListener);
+						markers.push(marker);
+					} else if (Marker) {
+						// Use regular Markers (no mapId needed)
+						const marker = new Marker({
+							position: club.location,
+							title: club.title,
+							map,
+							icon: {
+								url: "/icons/disco-icon.svg",
+								scaledSize: new google.maps.Size(40, 40),
+							}
+						});
+
+						const clickListener = marker.addListener("click", () => {
+							handleMarkerClick(club);
+						});
+						
+						listenersRef.current.push(clickListener);
+						markers.push(marker);
+					}
 				}
 
 				markersRef.current = markers;
@@ -127,7 +167,16 @@ export default memo<CustomMapProps>(function CustomMap({ clubs }) {
 				// Set map bounds if clubs exist
 				const bounds = calculateMapBounds(clubs);
 				if (bounds && clubs.length > 1) {
-					map.fitBounds(bounds, 50);
+					// Fit bounds with padding, then reduce zoom by 1 level for more space (same as cluster behavior)
+					map.fitBounds(bounds, { top: 50, right: 50, bottom: 50, left: 50 });
+					
+					// Wait for fitBounds to complete, then reduce zoom slightly for extra space
+					setTimeout(() => {
+						const currentZoom = map.getZoom();
+						if (currentZoom && currentZoom > DEFAULT_MAP_CONFIG.minZoom!) {
+							map.setZoom(currentZoom - 1);
+						}
+					}, 100);
 				} else if (clubs.length === 1) {
 					map.setCenter(clubs[0].location);
 					map.setZoom(14);
@@ -135,14 +184,22 @@ export default memo<CustomMapProps>(function CustomMap({ clubs }) {
 
 				// Create clusterer with custom renderer
 				if (markers.length > 0) {
-					const clusterer = new MarkerClusterer({
-						map,
-						markers,
-						renderer: createClusterRenderer(),
-						onClusterClick: createClusterClickHandler(map),
-					});
-
-					clustererRef.current = clusterer;
+					if (useAdvancedMarkers) {
+						// Use MarkerClusterer with Advanced Markers
+						const advancedMarkers = markers as google.maps.marker.AdvancedMarkerElement[];
+						const clusterer = new MarkerClusterer({
+							map,
+							markers: advancedMarkers,
+							renderer: createClusterRenderer(),
+							onClusterClick: createClusterClickHandler(map),
+						});
+						clustererRef.current = clusterer;
+					} else {
+						// Regular markers are already added to the map individually
+						// MarkerClusterer doesn't work well with regular markers in newer versions
+						// So we skip clustering for regular markers
+						console.log("Using regular markers - clustering disabled");
+					}
 				}
 			} catch (error) {
 				console.error("Failed to initialize map:", error);

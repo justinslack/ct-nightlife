@@ -24,7 +24,8 @@ export type FilterType = keyof MapFilters;
 export interface MapConfig {
   center: { lat: number; lng: number };
   zoom: number;
-  mapId: string;
+  mapId?: string;
+  styles?: google.maps.MapTypeStyle[];
   minZoom?: number;
   maxZoom?: number;
 } 
