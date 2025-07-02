@@ -2,7 +2,7 @@ import { getAllPosts, getPostBySlug } from "@/lib/mdx";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import Gallery from "@/components/maps/Gallery";
+import Gallery from "@/components/ui/Gallery";
 import Image from "next/image";
 import { BookUser, MapPin, Calendar, Tags } from "lucide-react";
 
