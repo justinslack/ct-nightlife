@@ -4,6 +4,7 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { AnimatedText } from "@/components/ui/animated-text";
 import { FadeUpText } from "@/components/ui/fade-up-text";
+import WavyToggleButton from "@/components/ui/wavy-button";
 
 interface VideoProps extends React.ComponentProps<"div"> {
   src: string
@@ -89,7 +90,7 @@ function Video({
               <AnimatedText
                 text={h1}
                 as="h1"
-                className="text-6xl md:text-9xl lg:text-[200px] font-100 mb-4 drop-shadow-lg"
+                className="text-6xl md:text-[240px] font-100 mb-4 drop-shadow-lg font-archivo tracking-tighter"
                 startDelay={0.3}
                 staggerDelay={0.05}
                 duration={0.6}
@@ -98,11 +99,11 @@ function Video({
             )}
             <FadeUpText 
                 as="h2" 
-                className="text-6xl font-100"
+                className="text-6xl font-100 font-archivo tracking-tighter max-w-2xl mx-auto text-yellow-200"
                 delay={0.6}
                 duration={0.8}
                 >
-               The Clubs. The DJs. The Nights We Never Forgot.
+               The Clubs. The DJs. The Nights We Will Not Forget.
                 </FadeUpText>
           </div>
         </div>

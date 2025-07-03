@@ -82,6 +82,13 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 			return null;
 		}
 
+		// Check if the document is a draft and return null if it is
+		const isDraft = frontmatter.draft ?? false;
+		if (isDraft) {
+			console.log(`Document ${sanitizedSlug} is a draft, not returning content`);
+			return null;
+		}
+
 		return {
 			slug: sanitizedSlug,
 			title: frontmatter.title,

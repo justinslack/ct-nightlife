@@ -27,16 +27,46 @@ export default memo<ArchiveMapWithFiltersProps>(function ArchiveMapWithFilters({
 
 	return (
 		<div className="w-full mx-auto">
-			<MapFilters
-				filters={filters}
-				availableNeighborhoods={neighborhoods}
-				availableTags={availableTags}
-				availableStatuses={availableStatuses}
-				onFilterChange={updateFilter}
-				onReset={resetFilters}
-				hasActiveFilters={hasActiveFilters}
-			/>
-			<CustomMap clubs={filteredClubs} />
+			{/* Mobile layout: Show popover button */}
+			<div className="block lg:hidden">
+				<MapFilters
+					filters={filters}
+					availableNeighborhoods={neighborhoods}
+					availableTags={availableTags}
+					availableStatuses={availableStatuses}
+					onFilterChange={updateFilter}
+					onReset={resetFilters}
+					hasActiveFilters={hasActiveFilters}
+					layout="popover"
+				/>
+			</div>
+			
+			{/* Desktop layout: Two columns */}
+			<div className="hidden lg:flex lg:gap-6">
+				{/* Left column: Filters sidebar */}
+				<div className="w-80 flex-shrink-0">
+					<MapFilters
+						filters={filters}
+						availableNeighborhoods={neighborhoods}
+						availableTags={availableTags}
+						availableStatuses={availableStatuses}
+						onFilterChange={updateFilter}
+						onReset={resetFilters}
+						hasActiveFilters={hasActiveFilters}
+						layout="sidebar"
+					/>
+				</div>
+				
+				{/* Right column: Map */}
+				<div className="flex-1">
+					<CustomMap clubs={filteredClubs} />
+				</div>
+			</div>
+			
+			{/* Mobile layout: Full width map */}
+			<div className="block lg:hidden">
+				<CustomMap clubs={filteredClubs} />
+			</div>
 		</div>
 	);
 });

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { satoshi, archivo } from "@/lib/fonts";
 import "./globals.css";
 import MainNav from "@/components/organisms/nav/components/MainNav";
+import WavyToggleButton from "@/components/ui/wavy-button";
 
 export const metadata: Metadata = {
 	title: "Create Next App",
@@ -22,10 +23,11 @@ export default function RootLayout({
 				<link rel="preconnect" href="https://maps.googleapis.com" />
 				<link rel="preconnect" href="https://maps.gstatic.com" />
 			</head>
-			<body className={`${satoshi.variable} ${archivo.variable} antialiased font-satoshi`}>
-				<MainNav />
-				{children}
-			</body>
+					<body className={`${satoshi.variable} ${archivo.variable} antialiased font-satoshi`}>
+			<MainNav />
+			{children}
+			<WavyToggleButton audioSrc="/media/AboveSmoke-SaveUs.mp3" />
+		</body>
 		</html>
 	);
 }

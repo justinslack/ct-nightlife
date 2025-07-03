@@ -19,11 +19,12 @@ export const MAP_STYLES = {
     font-size: 14px;
     font-weight: bold;
     cursor: pointer;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: rgb(252, 241, 148);
+    color: rgb(83, 130, 235);
     border: 2px solid white;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     transition: transform 0.2s ease;
+    font-family: 'Satoshi', sans-serif;
   `,
   clustererHover: `
     transform: scale(1.1);

@@ -6,11 +6,12 @@ export default function Home() {
 		<main className="grid grid-rows-auto gap-6">
 			<Video 
 				src="/media/HeroHomevideoTwo.mp4" 
-				h1="Echoes" 
-				h2="The Clubs. The DJs. The Nights We Never Forgot."
-				className="mb-6 font-archivo leading-tight font-light"
+				h1="ECHOES" 
+				className="mb-6 font-archivo"
 			/>
-			<ArchiveMap />
+			<section className="p-16">
+				<ArchiveMap />
+			</section>
 		</main>
 	);
 }
