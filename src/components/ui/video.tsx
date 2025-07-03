@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { AnimatedText } from "@/components/ui/animated-text";
 import { FadeUpText } from "@/components/ui/fade-up-text";
-import WavyToggleButton from "@/components/ui/wavy-button";
 
 interface VideoProps extends React.ComponentProps<"div"> {
   src: string

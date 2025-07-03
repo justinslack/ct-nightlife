@@ -7,7 +7,6 @@ interface ScrambleTextProps {
   isScrambling: boolean;
   className?: string;
   scrambleSpeed?: number;
-  resolveSpeed?: number;
 }
 
 const SCRAMBLE_CHARS = "!@#$%^&*()_+-=[]{}|;:,.<>?";
@@ -17,7 +16,6 @@ export function ScrambleText({
   isScrambling, 
   className = "",
   scrambleSpeed = 50,
-  resolveSpeed = 30
 }: ScrambleTextProps) {
   const [displayText, setDisplayText] = useState(text);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -29,7 +27,7 @@ export function ScrambleText({
       iterationRef.current = 0;
       
       const scramble = () => {
-        setDisplayText(prevText => {
+        setDisplayText(() => {
           return text
             .split("")
             .map((char, index) => {

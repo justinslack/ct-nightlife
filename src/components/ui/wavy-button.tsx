@@ -29,7 +29,6 @@ export default function WavyToggleButton({
   // Create multiple wave phases for smooth animation
   const createWavyPath = (phase: number) => {
     const amplitude = 8;
-    const frequency = 2;
     return `M20,50 Q${30 + amplitude * Math.sin(phase)},${50 + amplitude * Math.cos(phase)} 40,50 T${60 + amplitude * Math.sin(phase + Math.PI)},${50 + amplitude * Math.cos(phase + Math.PI)} T80,50`;
   };
 

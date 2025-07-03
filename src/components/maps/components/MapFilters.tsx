@@ -55,8 +55,7 @@ const FilterContent = memo<{
   onFilterChange: (type: FilterType, value: string) => void;
   onReset: () => void;
   hasActiveFilters: boolean;
-  layout: 'popover' | 'sidebar';
-}>(({ filters, availableNeighborhoods, availableTags, availableStatuses, onFilterChange, onReset, hasActiveFilters, layout }) => (
+}>(({ filters, availableNeighborhoods, availableTags, availableStatuses, onFilterChange, onReset, hasActiveFilters }) => (
   <div className="grid gap-6">
     <FilterSection
       title="Neighbourhood"
@@ -127,7 +126,6 @@ export default memo<MapFiltersProps>(function MapFilters({
           onFilterChange={onFilterChange}
           onReset={onReset}
           hasActiveFilters={hasActiveFilters}
-          layout={layout}
         />
       </div>
     );
@@ -167,7 +165,6 @@ export default memo<MapFiltersProps>(function MapFilters({
             onFilterChange={onFilterChange}
             onReset={onReset}
             hasActiveFilters={hasActiveFilters}
-            layout={layout}
           />
         </PopoverContent>
       </Popover>

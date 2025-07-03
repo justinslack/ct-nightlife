@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Instagram, Twitter, Facebook, Mail, MapPin, Phone } from "lucide-react";
+import { Instagram, Mail, MapPin, Phone } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-2xl font-bold font-archivo">CT Nightlife</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Preserving the legacy of Cape Town's vibrant nightlife culture. 
+              Preserving the legacy of Cape Town&apos;s vibrant nightlife culture. 
               Discover the clubs that shaped a generation.
             </p>
             <div className="flex space-x-4">
@@ -24,28 +24,6 @@ export default function Footer() {
                 <Link href="https://instagram.com" target="_blank" rel="noopener noreferrer">
                   <Instagram className="w-5 h-5" />
                   <span className="sr-only">Instagram</span>
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="ghost"
-                size="icon"
-                className="hover:bg-pink-600 hover:text-white"
-              >
-                <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                  <Twitter className="w-5 h-5" />
-                  <span className="sr-only">Twitter</span>
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="ghost"
-                size="icon"
-                className="hover:bg-pink-600 hover:text-white"
-              >
-                <Link href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-                  <Facebook className="w-5 h-5" />
-                  <span className="sr-only">Facebook</span>
                 </Link>
               </Button>
             </div>
@@ -138,7 +116,7 @@ export default function Footer() {
         <div className="border-t border-gray-700 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-sm text-gray-400">
-              © {new Date().getFullYear()} CT Nightlife. All rights reserved. Preserving Cape Town's club culture.
+              © {new Date().getFullYear()} CT Nightlife. All rights reserved. Preserving Cape Town&apos;s club culture.
             </div>
             <div className="flex space-x-6 text-sm">
               <Link href="/privacy" className="text-gray-400 hover:text-pink-400 transition-colors">
