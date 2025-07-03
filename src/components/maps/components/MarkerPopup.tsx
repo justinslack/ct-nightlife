@@ -72,7 +72,7 @@ export default memo<MarkerPopupProps>(function MarkerPopup({
         </span>
         
         <Link 
-          href={`/documents/${slug}`} 
+          href={`/the-clubs/${slug}`} 
           className="font-semibold text-blue-600 hover:text-blue-800 hover:underline transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded px-2 py-1"
           onClick={(e) => e.stopPropagation()}
         >
