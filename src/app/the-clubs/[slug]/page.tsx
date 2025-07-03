@@ -156,7 +156,7 @@ export default async function DocsPage({ params }: { params: Params }) {
 					)}
 
 					<div className="mt-12 pt-8 border-t">
-						<Link href="/documents" className="text-primary hover:underline">
+						<Link href="/the-clubs" className="text-primary hover:underline">
 							← Back to the archive
 						</Link>
 					</div>
@@ -170,7 +170,7 @@ export default async function DocsPage({ params }: { params: Params }) {
 				<h1 className="text-4xl font-bold mb-4">Error Loading Post</h1>
 				<p>There was an error loading this post. Please try again later.</p>
 				<div className="mt-12 pt-8 border-t">
-					<Link href="/documents" className="text-primary hover:underline">
+					<Link href="/the-clubs" className="text-primary hover:underline">
 						← Back to all documents
 					</Link>
 				</div>

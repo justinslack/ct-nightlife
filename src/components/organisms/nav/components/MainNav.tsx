@@ -10,7 +10,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const links = [
-	{ href: "/documents", label: "The Clubs", description: "The spaces we cherish" },
+	{ href: "/the-clubs", label: "The Clubs", description: "The spaces we cherish" },
 	{ href: "/djs", label: "The DJs", description: "The sounds we love" },
 	{ href: "/about", label: "Who we are", description: "What is this thing?" },
 	{ href: "/contribute", label: "How to contribute", description: "Get involved" },

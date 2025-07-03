@@ -19,7 +19,7 @@ export default async function ClubsPage() {
 			<h1 className="text-4xl font-bold mb-8">Current archive</h1>
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 				{clubs.map((club) => (
-					<Link key={club.slug} href={`/documents/${club.slug}`}>
+					<Link key={club.slug} href={`/the-clubs/${club.slug}`}>
 						<Card className="h-full hover:shadow-lg transition-shadow bg-white border-0">
 							<CardHeader>
 								<CardTitle className="text-desktop-h4 font-medium leading-[1.5]">{club.title}</CardTitle>

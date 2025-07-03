@@ -1,5 +1,6 @@
 import ArchiveMap from "@/components/maps/ArchiveMap";
 import {Video} from "@/components/ui/video";
+import VenuesSlider from "@/components/venues/venues-slider-server";
 
 export default function Home() {
 	return (
@@ -9,6 +10,7 @@ export default function Home() {
 				h1="ECHOES" 
 				className="mb-6 font-archivo"
 			/>
+			<VenuesSlider />
 			<section className="p-16">
 				<ArchiveMap />
 			</section>
