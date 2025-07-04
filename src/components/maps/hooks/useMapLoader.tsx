@@ -5,13 +5,14 @@ interface UseMapLoaderReturn {
   isLoading: boolean;
   error: string | null;
   retryLoad: () => void;
+  loadMaps: () => void; // Add manual trigger
 }
 
 // Global state to prevent multiple script loads
 let isGoogleMapsLoading = false;
 let googleMapsLoadPromise: Promise<void> | null = null;
 
-export function useMapLoader(): UseMapLoaderReturn {
+export function useMapLoader(autoLoad: boolean = false): UseMapLoaderReturn {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,14 +104,18 @@ export function useMapLoader(): UseMapLoaderReturn {
     loadGoogleMaps();
   }, [loadGoogleMaps]);
 
+  // Only auto-load if specified
   useEffect(() => {
-    loadGoogleMaps();
-  }, [loadGoogleMaps]);
+    if (autoLoad) {
+      loadGoogleMaps();
+    }
+  }, [autoLoad, loadGoogleMaps]);
 
   return {
     isLoaded,
     isLoading,
     error,
-    retryLoad
+    retryLoad,
+    loadMaps: loadGoogleMaps,
   };
 } 

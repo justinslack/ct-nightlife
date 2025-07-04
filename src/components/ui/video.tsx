@@ -22,32 +22,41 @@ function Video({
   ...props 
 }: VideoProps) {
   const videoRef = React.useRef<HTMLVideoElement>(null)
+  const [isLoaded, setIsLoaded] = React.useState(false)
 
   React.useEffect(() => {
     const video = videoRef.current
     if (!video) return
 
-    // Ensure video plays on mobile devices
-    const playVideo = async () => {
-      try {
-        await video.play()
-      } catch (error) {
-        console.warn('Autoplay prevented:', error)
-      }
-    }
-
-    // Set up intersection observer for autoplay
+    // Intersection observer for lazy loading
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            playVideo()
-          } else {
+          if (entry.isIntersecting && !isLoaded) {
+            // Start loading video when it comes into view
+            video.load();
+            setIsLoaded(true);
+            
+            // Try to play video
+            const playVideo = async () => {
+              try {
+                await video.play()
+              } catch (error) {
+                console.warn('Autoplay prevented:', error)
+              }
+            }
+            
+            playVideo();
+          } else if (!entry.isIntersecting && isLoaded) {
+            // Pause video when out of view to save resources
             video.pause()
           }
         })
       },
-      { threshold: 0.1 }
+      { 
+        threshold: 0.1,
+        rootMargin: '100px 0px' // Start loading 100px before entering viewport
+      }
     )
 
     observer.observe(video)
@@ -55,7 +64,7 @@ function Video({
     return () => {
       observer.disconnect()
     }
-  }, [])
+  }, [isLoaded])
 
   return (
     <div
@@ -69,17 +78,26 @@ function Video({
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
-        autoPlay
         muted
         loop
         playsInline
         poster={poster}
-        preload="metadata"
+        preload="none"
       >
         <source src={src} type="video/mp4" />
         <source src={src.replace('.mp4', '.webm')} type="video/webm" />
         Your browser does not support the video tag.
       </video>
+      
+      {/* Loading indicator */}
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+          <div className="text-white text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-2 border-white border-t-transparent mx-auto mb-4"></div>
+            <p>Loading video...</p>
+          </div>
+        </div>
+      )}
       
       {/* Overlay for text content */}
       {(h1 || h2) && (

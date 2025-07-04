@@ -29,6 +29,89 @@ interface VenuesSliderClientProps {
   className?: string;
 }
 
+const VenueCard = React.memo<{ venue: Venue; index: number }>(({ venue, index }) => {
+  const [isImageLoaded, setIsImageLoaded] = React.useState(false);
+  const [isInView, setIsInView] = React.useState(false);
+  const cardRef = React.useRef<HTMLDivElement>(null);
+  
+  const colors = cardColors[index % cardColors.length];
+  
+  // Intersection observer for lazy loading
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: '50px 0px' }
+    );
+    
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+    
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <Card 
+      ref={cardRef}
+      className={`${colors.cardBg} border-0 shadow-lg h-full overflow-hidden`}
+    >
+      <div className={`${colors.bg} p-6 h-48 flex items-center justify-center relative`}>
+        {isInView && (
+          <>
+            <Image
+              src={venue.cover_image}
+              alt={venue.title}
+              fill
+              className={`object-cover rounded-lg transition-opacity duration-300 ${
+                isImageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              loading="lazy"
+              quality={75}
+              onLoad={() => setIsImageLoaded(true)}
+            />
+            {!isImageLoaded && (
+              <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-gray-300 rounded-full animate-pulse"></div>
+              </div>
+            )}
+          </>
+        )}
+        {!isInView && (
+          <div className="absolute inset-0 bg-gray-200 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
+          </div>
+        )}
+      </div>
+      <CardHeader className="pb-4">
+        <CardTitle className="text-xl font-bold text-gray-900 line-clamp-2">
+          {venue.title}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex-1 flex flex-col justify-between">
+        <p className="text-gray-600 mb-6 line-clamp-3">
+          {venue.description}
+        </p>
+        <Button
+          asChild
+          className={`${colors.buttonBg} text-white rounded-full px-6 py-2 transition-all duration-200 mt-auto`}
+        >
+          <Link href={`/the-clubs/${venue.slug}`}>
+            Read the Story
+          </Link>
+        </Button>
+      </CardContent>
+    </Card>
+  );
+});
+
+VenueCard.displayName = "VenueCard";
+
 export function VenuesSliderClient({ venues, className }: VenuesSliderClientProps) {
   return (
     <section className={`py-16 ${className}`}>
@@ -59,40 +142,9 @@ export function VenuesSliderClient({ venues, className }: VenuesSliderClientProp
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {venues.map((venue, index) => {
-            const colors = cardColors[index % cardColors.length];
-            return (
-              <Card key={venue.slug} className={`${colors.cardBg} border-0 shadow-lg h-full overflow-hidden`}>
-                <div className={`${colors.bg} p-6 h-48 flex items-center justify-center relative`}>
-                  <Image
-                    src={venue.cover_image}
-                    alt={venue.title}
-                    fill
-                    className="object-cover rounded-lg"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                  />
-                </div>
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-xl font-bold text-gray-900 line-clamp-2">
-                    {venue.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 flex flex-col justify-between">
-                  <p className="text-gray-600 mb-6 line-clamp-3">
-                    {venue.description}
-                  </p>
-                  <Button
-                    asChild
-                    className={`${colors.buttonBg} text-white rounded-full px-6 py-2 transition-all duration-200 mt-auto`}
-                  >
-                    <Link href={`/the-clubs/${venue.slug}`}>
-                      Read the Story
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            );
-          })}
+          {venues.map((venue, index) => (
+            <VenueCard key={venue.slug} venue={venue} index={index} />
+          ))}
         </div>
       </div>
     </section>

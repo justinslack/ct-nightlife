@@ -11,7 +11,7 @@ interface WavyToggleButtonProps {
 }
 
 export default function WavyToggleButton({ 
-  audioSrc = "/media/HeroVideoHomePage.mp4", // Default audio file
+  audioSrc = "/media/AboveSmoke-SaveUs.mp3", // Fixed: was pointing to video file
   className = ""
 }: WavyToggleButtonProps) {
   const pathname = usePathname();
@@ -19,6 +19,7 @@ export default function WavyToggleButton({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [audioInitialized, setAudioInitialized] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const controls = useAnimation();
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -59,11 +60,12 @@ export default function WavyToggleButton({
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isHomePage]);
 
-  // Initialize audio
-  useEffect(() => {
-    if (audioSrc) {
+  // Initialize audio only when needed (lazy loading)
+  const initializeAudio = () => {
+    if (!audioInitialized && audioSrc) {
       audioRef.current = new Audio(audioSrc);
       audioRef.current.loop = true;
+      audioRef.current.preload = "none"; // Don't preload audio
       
       // Handle audio events
       const audio = audioRef.current;
@@ -77,14 +79,20 @@ export default function WavyToggleButton({
       audio.addEventListener('ended', handleEnded);
       audio.addEventListener('error', handleError);
       
-      return () => {
-        audio.removeEventListener('ended', handleEnded);
-        audio.removeEventListener('error', handleError);
-        audio.pause();
-        audio.currentTime = 0;
-      };
+      setAudioInitialized(true);
     }
-  }, [audioSrc]);
+  };
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (isWavy) {
@@ -121,21 +129,24 @@ export default function WavyToggleButton({
     const newWavyState = !isWavy;
     setIsWavy(newWavyState);
     
-    if (audioRef.current) {
-      if (newWavyState && !isPlaying) {
-        // Start playing audio
+    if (newWavyState) {
+      // Initialize audio on first click
+      initializeAudio();
+      
+      // Try to play audio
+      if (audioRef.current) {
         try {
           await audioRef.current.play();
           setIsPlaying(true);
         } catch (error) {
           console.error('Failed to play audio:', error);
         }
-      } else if (!newWavyState && isPlaying) {
-        // Stop playing audio
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-        setIsPlaying(false);
       }
+    } else if (audioRef.current && isPlaying) {
+      // Stop playing audio
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsPlaying(false);
     }
   };
 
