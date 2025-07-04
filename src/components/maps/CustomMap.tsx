@@ -25,9 +25,10 @@ export default memo<CustomMapProps>(function CustomMap({ clubs }) {
 	const clustererRef = useRef<MarkerClusterer | null>(null);
 	const markersRef = useRef<(google.maps.marker.AdvancedMarkerElement | google.maps.Marker)[]>([]);
 	const listenersRef = useRef<google.maps.MapsEventListener[]>([]);
+	const [shouldLoadMaps, setShouldLoadMaps] = useState(false);
 	
 	const [popup, setPopup] = useState<PopupState | null>(null);
-	const { isLoaded: mapLoaded, isLoading, error, retryLoad } = useMapLoader();
+	const { isLoaded: mapLoaded, isLoading, error, retryLoad, loadMaps } = useMapLoader(shouldLoadMaps);
 
 	const closePopup = useCallback(() => setPopup(null), []);
 	
@@ -36,6 +37,32 @@ export default memo<CustomMapProps>(function CustomMap({ clubs }) {
 		() => debounce(() => setPopup(null), 100),
 		[]
 	);
+
+	// Intersection observer for lazy loading
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting && !shouldLoadMaps) {
+						setShouldLoadMaps(true);
+						loadMaps();
+					}
+				});
+			},
+			{ 
+				threshold: 0.1,
+				rootMargin: '200px 0px' // Start loading 200px before entering viewport
+			}
+		);
+
+		if (mapContainerRef.current) {
+			observer.observe(mapContainerRef.current);
+		}
+
+		return () => {
+			observer.disconnect();
+		};
+	}, [shouldLoadMaps, loadMaps]);
 
 	const handleMarkerClick = useCallback((club: Club) => {
 		const map = mapRef.current;
@@ -232,11 +259,21 @@ export default memo<CustomMapProps>(function CustomMap({ clubs }) {
 	return (
 		<div ref={mapContainerRef} className="relative w-full h-[calc(100vh-10rem)] rounded-lg overflow-hidden">
 			{/* Loading overlay */}
-			{isLoading && (
+			{(isLoading || (!mapLoaded && shouldLoadMaps)) && (
 				<div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
 					<div className="flex items-center space-x-3">
 						<div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent"></div>
 						<span className="text-lg font-medium text-blue-700">Loading map…</span>
+					</div>
+				</div>
+			)}
+			
+			{/* Placeholder when map hasn't started loading */}
+			{!shouldLoadMaps && (
+				<div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-100">
+					<div className="text-center">
+						<div className="text-gray-500 mb-2">Interactive Map</div>
+						<div className="text-sm text-gray-400">Scroll down to load</div>
 					</div>
 				</div>
 			)}
